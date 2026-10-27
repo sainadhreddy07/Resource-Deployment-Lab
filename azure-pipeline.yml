@@ -1,0 +1,86 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- checkout: self
+
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: latest
+
+
+# =============================================================
+# Terraform INIT
+# =============================================================
+- task: AzureCLI@2
+  displayName: Terraform Init
+  inputs:
+    azureSubscription: Azure-Service-Connection
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      cd main
+      terraform init
+
+
+
+# =============================================================
+# Terraform VALIDATE
+# =============================================================
+- task: AzureCLI@2
+  displayName: Terraform Validate
+  inputs:
+    azureSubscription: Azure-Service-Connection
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      cd main
+      terraform validate
+
+
+# ============================================================
+# Terraform FORMAT
+# ============================================================
+- task: AzureCLI@2
+  displayName: Terraform Format Check
+  inputs:
+    azureSubscription: Azure-Service-Connection
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      cd main
+      terraform fmt -check
+
+
+# =============================================================
+# Terraform PLAN
+# =============================================================
+- task: AzureCLI@2
+  displayName: Terraform Plan
+  inputs:
+    azureSubscription: Azure-Service-Connection
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      cd main
+      terraform plan -out=tflab.tfplan
+
+
+# =============================================================
+# Terraform APPLY
+# =============================================================
+- task: AzureCLI@2
+  displayName: Terraform Apply
+  inputs:
+    azureSubscription: Azure-Service-Connection
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      cd main
+      terraform apply tflab.tfplan
+
+      
