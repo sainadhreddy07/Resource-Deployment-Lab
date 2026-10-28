@@ -1,0 +1,4 @@
+resource_group_name  = "rg-resource-lab"
+storage_account_name = "rsrclabsa001"
+container_name       = "tfstate"
+key                  = "terraform.tfstate"
